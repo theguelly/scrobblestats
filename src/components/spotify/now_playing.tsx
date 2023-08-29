@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import spotifyRefresh from "@/utils/refresh-token";
-import { GetServerSideProps } from 'next';
 
 export default async function NowPlaying() {
   let { access_token } = await spotifyRefresh() as any;
@@ -32,23 +31,25 @@ export default async function NowPlaying() {
     <>
       {(result &&
         <>
-          <div className="absolute bottom-20 z-10 w-fit bg-gray-600 py-3 rounded shadow-lg shadow-gray-900 ring-1 ring-black ring-opacity-5">
-            <div className='px-5 mb-1'>
-              <span className='text-sm'>theguelly&apos;s { result.is_playing ? 'now playing' : 'last played'}:</span>
+          <div className="absolute mx-auto max-w-md left-0 right-0 bg-cover bg-center bottom-10 mb-4 z-10 w-full rounded-lg drop-shadow-lg" style={{ backgroundImage: `url('${result.art}')` }}>
+            <div className='backdrop-brightness-[0.25] self-center rounded-lg min-w-full pb-5 backdrop-blur'>
+              <div className='px-5 py-1'>
+                <span className='text-sm drop-shadow-xl mix-blend-difference'>theguelly&apos;s { result.is_playing ? 'now playing' : 'last played'}:</span>
+              </div>
+              <a href={result.url} className="flex items-center px-5" title={`${result.artist} - ${result.song}`} target="_blank">
+                <div className="flex-shrink-0 ">
+                  <Image width='300' height='300' className="h-14 w-auto drop-shadow-lg rounded-2xl" src={result.art} alt="" />
+                </div>
+                <div className="ml-3">
+                  <div className="text-base font-medium leading-none text-white py-1 max-w-xs truncate mix-blend-difference">
+                    {result.song}
+                  </div>
+                  <div className="text-xs font-medium leading-none text-gray-400 py-1 max-w-xs truncate mix-blend-difference">
+                    {result.artist}
+                  </div>
+                </div>
+              </a>
             </div>
-            <a href={result.url} className="flex items-center px-5" title={`${result.artist} - ${result.song}`} target="_blank">
-              <div className="flex-shrink-0">
-                <Image width='100' height='100' className="h-10 w-10  rounded-full" src={result.art} alt="" />
-              </div>
-              <div className="ml-3">
-                <div className="text-base font-medium leading-none text-white py-1 max-w-xs truncate">
-                  {result.song}
-                </div>
-                <div className="text-sm font-medium leading-none text-gray-400 py-1 max-w-xs truncate">
-                  {result.artist}
-                </div>
-              </div>
-            </a>
           </div>
         </>
       )}
