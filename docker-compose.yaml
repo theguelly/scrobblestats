@@ -1,0 +1,47 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./src/api
+      dockerfile: Dockerfile
+      target: development
+    image: scrobblestats-nestjs-api
+    ports:
+      - "3001:3001"
+    networks:
+      - ssnetwork
+    depends_on:
+      - mongodb
+    volumes:
+      - ./src/api:/usr/src/www
+      - /usr/src/www/node_modules
+    command: npm run start:dev
+
+  front:
+    build:
+      context: ./src/front
+      dockerfile: Dockerfile
+      target: development
+    image: scrobblestats-nuxtjs-front
+    ports:
+      - "3000:3000"
+      - "24678:24678" # Map port 24678 for WebSocket (HMR)
+    networks:
+      - ssnetwork
+    volumes:
+      - ./src/front:/usr/src/www
+      - /usr/src/www/node_modules
+    command: npm run dev
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./docker_data/mongodb_data:/data/db  # Updated volume path here
+    networks:
+      - ssnetwork
+
+networks:
+  ssnetwork:
+    driver: bridge
