@@ -1,0 +1,60 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./src/api
+      dockerfile: Dockerfile
+      target: development
+    image: theguellyportfolioapp-api
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    networks:
+      - tgpnetwork
+    depends_on:
+      - mongodb
+    volumes:
+      - ./src/api:/usr/src/www
+      - /usr/src/www/node_modules
+    command: npm run start:dev
+
+  front:
+    build:
+      context: ./src/front
+      dockerfile: Dockerfile
+      target: development
+    image: theguellyportfolioapp-front
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+      - "24678:24678" # Map port 24678 for WebSocket (HMR)
+    networks:
+      - tgpnetwork
+    volumes:
+      - ./src/front:/usr/src/www
+      - /usr/src/www/node_modules
+    command: npm run dev
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./docker_data/mongodb_data:/data/db
+    networks:
+      - tgpnetwork
+
+  adminmongo:
+    image: mrvautin/adminmongo
+    env_file:
+      - .env
+    ports:
+      - "1234:1234"
+    networks:
+      - tgpnetwork
+
+networks:
+  tgpnetwork:
+    driver: bridge
