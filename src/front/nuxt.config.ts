@@ -3,5 +3,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
     host: '0.0.0.0',
-  }
+  },
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxt/content',
+  ],
+  content: {
+    watch: false
+  },
 })
