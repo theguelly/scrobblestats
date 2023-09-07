@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18 As development
+FROM node:18.17.1 As development
 
 # Create app directory
 WORKDIR /usr/src/www
@@ -12,9 +12,10 @@ WORKDIR /usr/src/www
 # Copying this first prevents re-running npm install on every code change.
 # COPY --chown=node:node package*.json ./
 COPY package*.json ./
+COPY yarn.lock ./
 
-# Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm install
+# Install app dependencies
+RUN yarn install --immutable --immutable-cache
 
 # Bundle app source
 # COPY --chown=node:node . .
@@ -27,7 +28,7 @@ COPY . .
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:18 As build
+FROM node:18.17.1 As build
 
 WORKDIR /usr/src/www
 
@@ -42,7 +43,7 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 COPY --chown=node:node . .
 
 # Run the build command which creates the production bundle
-RUN npm run build
+RUN yarn build
 
 # Set NODE_ENV environment variable
 ENV NODE_ENV production
@@ -50,7 +51,8 @@ ENV NODE_ENV production
 # Running `npm ci` removes the existing node_modules directory.
 # Passing in --only=production ensures that only the production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
-RUN npm ci --only=production && npm cache clean --force
+#RUN npm ci --only=production && npm cache clean --force
+RUN yarn install --production --immutable --immutable-cache && yarn cache clean
 
 USER node
 
@@ -58,7 +60,7 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18 As production
+FROM node:18.17.1 As production
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules

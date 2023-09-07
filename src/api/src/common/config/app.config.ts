@@ -7,7 +7,8 @@ export default () => ({
     port: parseInt(process.env.DB_PORT, 10) ?? 27017,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    uri: `mongodb://${process.env.DB_HOST ?? 'mongo'}:${parseInt(process.env.DB_PORT, 10) ?? 27017}/${process.env.DB_NAME ?? 'nest'}`,
+    // uri: `mongodb://${process.env.DB_HOST ?? 'mongo'}:${parseInt(process.env.DB_PORT, 10) ?? 27017}/${process.env.DB_NAME ?? 'nest'}`,
+    uri: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`,
   },
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET,

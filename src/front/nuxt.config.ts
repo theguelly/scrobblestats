@@ -7,6 +7,11 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxt/content',
+    'nuxt-icon',
+    '@nuxtjs/device',
+  ],
+  plugins: [
+    '@/plugins/particles',
   ],
   content: {
     watch: false
