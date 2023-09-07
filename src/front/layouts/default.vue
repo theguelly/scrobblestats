@@ -11,10 +11,17 @@
       { name: 'description', content: 'theguelly' }
     ],
     bodyAttrs: {
-      class: 'h-full bg-slate-900 text-slate-200'
+      class: 'min-h-screen text-slate-200'
     },
     htmlAttrs: {
-      class: 'h-full'
-    }
+      class: 'min-h-screen'
+    },
+    link: [
+      {
+        rel: 'style',
+        href: '/css/inter.css',
+        as: 'stylesheet',
+      }  
+    ],
   })
 </script>
